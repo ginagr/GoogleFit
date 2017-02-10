@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         OnMapReadyCallback, LocationListener {
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private MediaPlayer mediaPlayer;
 
     private ActInfo currAct;
+    private UUID lastid;
 
     private static ActLab actLab;
 
@@ -83,9 +85,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
-
-        ActInfo newAct0 = new ActInfo("Unknown Activity");
+        //instantiate with still
+        ActInfo newAct0 = new ActInfo("Still");
         currAct = newAct0;
+        lastid = currAct.getId();
 
         actLab = ActLab.get(this);
         actLab.addAct(newAct0);
@@ -153,6 +156,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             // Do nothing if we detected the same activity we were just doing.
             return;
         }
+
+        //Testing how freqently it is checking for new activity
+        Log.e("MainActivity", "activity detected: " + newActivity);
+
         // Set text for corresponding activity:
         String text = "You are " + newActivity;
         activityText.setText(text);
@@ -165,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mediaPlayer.pause();
             }
             ActInfo newAct = new ActInfo(newActivity);
+            lastid = currAct.getId();
             currAct = newAct;
             actLab.addAct(newAct);
 
@@ -174,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mediaPlayer.start();
             }
             ActInfo newAct = new ActInfo(newActivity);
+            lastid = currAct.getId();
             currAct = newAct;
             actLab.addAct(newAct);
 
@@ -183,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mediaPlayer.start();
             }
             ActInfo newAct = new ActInfo(newActivity);
+            lastid = currAct.getId();
             currAct = newAct;
             actLab.addAct(newAct);
 
@@ -192,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mediaPlayer.pause();
             }
             ActInfo newAct = new ActInfo(newActivity);
+            lastid = currAct.getId();
             currAct = newAct;
             actLab.addAct(newAct);
 
@@ -202,30 +213,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mediaPlayer.pause();
             }
             ActInfo newAct = new ActInfo(newActivity);
+            lastid = currAct.getId();
             currAct = newAct;
             actLab.addAct(newAct);
         }
-        timeSinceLastActivity = getTimeSinceLastActivity(currAct);
-        toastAnnouncement("you were " + currAct.getAct() + " for " + timeSinceLastActivity);
+        timeSinceLastActivity = getTimeSinceLastActivity(actLab.getAct(lastid));
+        toastAnnouncement("you were " + actLab.getAct(lastid).getAct() + " for " + timeSinceLastActivity);
     }
 
     public String getTimeSinceLastActivity(ActInfo curr) {
+
         Date currDate = new Date();
         long diff = currDate.getTime() - curr.getStartTime().getTime();
-        long sec = 1000;
-        long min = sec * 60;
-        long hour = min * 60;
-        long day = hour * 24;
-        long elapsedDays = diff / day;
-        diff = diff % day;
-        long elapsedHours = diff / hour;
-        diff = diff % hour;
-        long elapsedMinutes = diff / min;
-        diff = diff % min;
-        long elapsedSeconds = diff / sec;
 
-        return elapsedDays + " days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " +
-                elapsedSeconds + " seconds";
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000);
+
+        return  diffHours + " hours, " + diffMinutes + " minutes, " +
+                diffSeconds + " seconds";
     }
 
     private void toastAnnouncement(String announcement) {
@@ -254,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
-        mGoogleMap=googleMap;
+        mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
