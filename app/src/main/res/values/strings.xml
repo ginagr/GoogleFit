@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Google Fit</string>
+    <string name="current_activity">You are </string>
+    <string name="currentactivityimage">currentActivityImage</string>
+    <string name="noActivity">Cannon determine your activity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key">AIzaSyA-QH96FqfccZcEsHkSdgZElI07Mu8MWO0</string>
+</resources>
