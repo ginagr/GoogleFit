@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Set text for corresponding activity:
         String text = "You are " + newActivity;
         activityText.setText(text);
-        String timeSinceLastActivity; 
+        String timeSinceLastActivity;
 
         // Set image for the corresponding activity:
         if (newActivity.equals(ActivitiesEnum.STILL.toString())) {
@@ -362,7 +362,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     protected void onStop() {
-        unregisterReceiver(receiver);
         super.onStop();
+
+        try {
+            unregisterReceiver(receiver);
+        }
+        catch (Exception e) {
+            Log.e("Main Activity", "Could not unregister register " + e);
+        }
+
     }
 }
