@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public ActivityReceiver receiver;
 
+    int count = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
-        //instantiate with still
-        ActInfo newAct0 = new ActInfo("Still");
+        //start with no activity until mApiClient is connected
+        ActInfo newAct0 = new ActInfo("checking for activity... ");
         currAct = newAct0;
         lastid = currAct.getId();
 
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         activityImage = (ImageView) findViewById(R.id.activityImage);
 
         activityText.setText(currAct.getAct());
-        activityImage.setImageResource(R.mipmap.still);
+        activityImage.setImageResource(R.mipmap.ic_launcher);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.beat_02);
         mediaPlayer.setLooping(true);
@@ -158,12 +160,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         //Testing how freqently it is checking for new activity
-        Log.e("MainActivity", "activity detected: " + newActivity);
+        Log.e("MainActivity", "activity detected: " + newActivity + " count: " + count++);
 
         // Set text for corresponding activity:
         String text = "You are " + newActivity;
         activityText.setText(text);
-        String timeSinceLastActivity; //instatiate in case first activity
+        String timeSinceLastActivity; 
 
         // Set image for the corresponding activity:
         if (newActivity.equals(ActivitiesEnum.STILL.toString())) {
@@ -217,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             currAct = newAct;
             actLab.addAct(newAct);
         }
+
         timeSinceLastActivity = getTimeSinceLastActivity(actLab.getAct(lastid));
         toastAnnouncement("you were " + actLab.getAct(lastid).getAct() + " for " + timeSinceLastActivity);
     }

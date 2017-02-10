@@ -1,9 +1,5 @@
 package name.heqian.cs528.googlefit;
 
-/**
- * Created by obatolaseward-evans on 2/8/17.
- */
-
 public enum ActivitiesEnum {
     WALKING("Walking"),
     STILL("Still"),
